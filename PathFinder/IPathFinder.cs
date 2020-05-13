@@ -16,7 +16,7 @@ namespace PathFinder
     {
         public bool Find(int[] array)
         {
-            return FindPath(array, null, 0);
+            return FindPath(array);
         }
 
         private void PrintArray(int[] array, int? markIndex = null)
@@ -27,27 +27,34 @@ namespace PathFinder
                 asd.Add(i == markIndex ? $"*{array[i]}*" : array[i].ToString());
             Console.WriteLine("[{0}]", string.Join(", ", asd));
         }
-        public bool FindPath(int[] array, bool[] visited = null, int start = 0)
+
+        public bool FindPath(int[] array)
         {
+            var currentIndex = 0;
+            var indices = new List<int>();
 
-            if (visited == null) visited = new bool[array.Length];
-            if (start < 0 || start > array.Length - 1 || visited[start]) return false;
-
-            if (start == array.Length - 1) return true;
-            var current = array[start];
-
-            PrintArray(array, start);
-
-            visited[start] = true;
-            if (current == 0) return false;
-
-            for (var step = Math.Abs(current); step > 0; step--)
+            while (currentIndex < array.Length - 1)
             {
-                if (FindPath(array, visited, start + Math.Sign(current) * step))
-                    return true;
-            }
+                if (array[currentIndex] <= 0) return false;
 
-            return false;
+                var maxPositionAfterJump = 0;
+                var bestStep = 0;
+                var steps = array[currentIndex];
+                for (var i = 1; i <= steps; i++)
+                {
+                    var nextStep = array[currentIndex + i];
+                    if (maxPositionAfterJump < i + nextStep)
+                    {
+                        maxPositionAfterJump = i + nextStep;
+                        bestStep = currentIndex + i;
+                    }
+                }
+
+                currentIndex = bestStep;
+                indices.Add(currentIndex);
+            }
+            PrintArray(indices.ToArray());
+            return true;
         }
     }
 
