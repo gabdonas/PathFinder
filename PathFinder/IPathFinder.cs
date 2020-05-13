@@ -32,26 +32,29 @@ namespace PathFinder
         {
             var currentIndex = 0;
             var indices = new List<int>();
-
             while (currentIndex < array.Length - 1)
             {
                 if (array[currentIndex] <= 0) return false;
+                indices.Add(currentIndex);
 
-                var maxPositionAfterJump = 0;
+                var maxAdvance = 0;
                 var bestStep = 0;
                 var steps = array[currentIndex];
                 for (var i = 1; i <= steps; i++)
                 {
                     var nextStep = array[currentIndex + i];
-                    if (maxPositionAfterJump < i + nextStep)
+                    if (maxAdvance < i + nextStep)
                     {
-                        maxPositionAfterJump = i + nextStep;
+                        maxAdvance = i + nextStep;
                         bestStep = currentIndex + i;
                     }
                 }
-
                 currentIndex = bestStep;
-                indices.Add(currentIndex);
+                if (currentIndex + array[currentIndex] > array.Length - 1)
+                {
+                    indices.Add(currentIndex);
+                    return true;
+                }
             }
             PrintArray(indices.ToArray());
             return true;
