@@ -21,22 +21,15 @@ namespace PathFinder.UnitTests
         {
             Assert.Equal(expected, sut.Find(data).IsTraversable);
         }
-        
-        [Theory]
-        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0 }, true, new[] { 0, 1, 3, 5, 6 })]
-        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0, -1 }, true, new[] { 0, 1, 3, 5, 7 })]
-        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0, -1 ,-1}, true, new[] { 0, 1, 3, 5, 8 })]
-        [InlineData(new[] { 9, 2, 0, 2, 0, 3, 0, -1 ,-1, -1}, true, new[] { 0,9 })]
-        public void test(int[] data, bool expectedResult, int[] expectedPath)
-        {
-            var result = sut.Find(data);
-            Assert.Equal(expectedResult, result.IsTraversable);
-            Assert.Equal(expectedPath, result.Indices);
-        }
+
 
         [Theory]
         [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0 }, true, new[] { 0, 1, 3, 5, 6 })]
         [InlineData(new[] { 1, 2, 0, 3, 0, 3, 0, 0 }, true, new[] { 0, 1, 3, 5, 7 })]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 3, 3 }, true, new[] { 0, 1, 3, 5, 6 })]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0, -1 }, true, new[] { 0, 1, 3, 5, 7 })]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0, -1, -1 }, true, new[] { 0, 1, 3, 5, 8 })]
+        [InlineData(new[] { 9, 2, 0, 2, 0, 3, 0, -1, -1, -1 }, true, new[] { 0, 9 })]
         [InlineData(new[] { 2, 5, 10, 0, 0, 0, 5, 0, 0, 0, 0, 5, 2, 1, 1, 1, 4, 0, 0, 0, 0 }, true, new[] { 0, 2, 11, 16, 20 })]
         [InlineData(new[] { 2, 5, 10, 0, 0, 0, 5, 0, 0, 0, 0, 5, 2, 1, 1, 1, 5, 0, 0, 0, 0 }, true, new[] { 0, 2, 11, 16, 20 })]
         [InlineData(new[] { 2, 5, 10, 0, 0, 0, 5, 0, 0, 0, 0, 5, 2, 1, 1, 6, 2, 0, 2, 0, 0 }, true, new[] { 0, 2, 11, 15, 20 })]
