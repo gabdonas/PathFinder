@@ -19,11 +19,23 @@ namespace PathFinder.UnitTests
         [InlineData(new[] { 1, 2, 1, -1, 0, 2, 0 }, false)]
         public void FindsWhetherTraversablePathExists(int[] data, bool expected)
         {
-            Assert.Equal(expected ,sut.Find(data).IsTraversable);
+            Assert.Equal(expected, sut.Find(data).IsTraversable);
+        }
+        
+        [Theory]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0 }, true, new[] { 0, 1, 3, 5, 6 })]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0, -1 }, true, new[] { 0, 1, 3, 5, 7 })]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0, -1 ,-1}, true, new[] { 0, 1, 3, 5, 8 })]
+        [InlineData(new[] { 9, 2, 0, 2, 0, 3, 0, -1 ,-1, -1}, true, new[] { 0,9 })]
+        public void test(int[] data, bool expectedResult, int[] expectedPath)
+        {
+            var result = sut.Find(data);
+            Assert.Equal(expectedResult, result.IsTraversable);
+            Assert.Equal(expectedPath, result.Indices);
         }
 
         [Theory]
-        [InlineData(new[] { 1, 2, 0, 3, 0, 3, 0 }, true, new[] { 0, 1, 3, 5, 6 })]
+        [InlineData(new[] { 1, 2, 0, 2, 0, 3, 0 }, true, new[] { 0, 1, 3, 5, 6 })]
         [InlineData(new[] { 1, 2, 0, 3, 0, 3, 0, 0 }, true, new[] { 0, 1, 3, 5, 7 })]
         [InlineData(new[] { 2, 5, 10, 0, 0, 0, 5, 0, 0, 0, 0, 5, 2, 1, 1, 1, 4, 0, 0, 0, 0 }, true, new[] { 0, 2, 11, 16, 20 })]
         [InlineData(new[] { 2, 5, 10, 0, 0, 0, 5, 0, 0, 0, 0, 5, 2, 1, 1, 1, 5, 0, 0, 0, 0 }, true, new[] { 0, 2, 11, 16, 20 })]
@@ -64,13 +76,12 @@ namespace PathFinder.UnitTests
         [InlineData(new[] { 1, -1 }, true, new[] { 0, 1 })]
         [InlineData(new[] { 5, -1 }, true, new[] { 0, 1 })]
         [InlineData(new[] { -5, -1 }, false, null)]
-        [InlineData(new[] { int.MaxValue, int.MinValue }, true, null)]
+        [InlineData(new[] { int.MaxValue, int.MinValue }, true, new[] { 0, 1 })]
         [InlineData(new[] { int.MinValue, int.MaxValue }, false, null)]
-        [InlineData(new int[] { }, false, null)]
         public void CorrectlyHandles2ItemArrays(int[] data, bool expectedResult, int[] expectedPath)
         {
             var result = sut.Find(data);
-            Assert.Equal(expectedResult ,result.IsTraversable);
+            Assert.Equal(expectedResult, result.IsTraversable);
             Assert.Equal(expectedPath, result.Indices);
         }
 
@@ -82,9 +93,9 @@ namespace PathFinder.UnitTests
         [InlineData(null, false, null)]
         public void ShouldThrowExceptionFor1ItemOrEmptyArray(int[] data, bool expectedResult, int[] expectedPath)
         {
-            Assert.ThrowsAny<Exception>(()=>sut.Find(data));
+            Assert.ThrowsAny<Exception>(() => sut.Find(data));
         }
 
-       
+
     }
 }

@@ -24,29 +24,30 @@ namespace PathFinder
         {
             if (array.Length <= 1) throw new ArgumentException("Array should have at least 2 integers");
             var currentIndex = 0;
-            var indices = new List<int>(){0};
-            while (currentIndex < array.Length - 1)
+            var indices = new List<int>() { 0 };
+            while (currentIndex < array.Length)
             {
                 if (array[currentIndex] <= 0) return new PathFinderResult { IsTraversable = false };
-              
+
                 var maxAdvance = 0;
                 var bestStep = 0;
                 var stepTo = currentIndex + array[currentIndex];
-                for (var i = currentIndex + 1; i <= stepTo; i++)
+                if (stepTo < array.Length - 1)
                 {
-                    var nextStep = array[i];
-                    if (maxAdvance < i + nextStep)
+                    for (var i = currentIndex + 1; i <= stepTo; i++)
                     {
-                        maxAdvance = i + nextStep;
-                        bestStep = i;
+                        var nextStep = array[i];
+                        if (maxAdvance < i + nextStep)
+                        {
+                            maxAdvance = i + nextStep;
+                            bestStep = i;
+                        }
                     }
+                    currentIndex = bestStep;
+
+                    indices.Add(currentIndex);
                 }
-              
-                currentIndex = bestStep;
-                
-                indices.Add(currentIndex);
-                //If the next step exceeds 
-                if (currentIndex + array[currentIndex] > array.Length - 1)
+                else
                 {
                     indices.Add(array.Length - 1);
                     break;
