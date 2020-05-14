@@ -9,6 +9,7 @@ namespace PathFinder
     public interface IPathFinder
     {
         PathFinderResult Find(int[] array);
+        IEnumerable<PathFinderResult> Find(int[][] array);
     }
 
     public class PathFinderResult
@@ -55,6 +56,15 @@ namespace PathFinder
             }
 
             return new PathFinderResult { IsTraversable = true, Indices = indices.ToArray() };
+        }
+
+        public IEnumerable<PathFinderResult> Find(int[][] array)
+        {
+           foreach (var item in array)
+            {
+                yield return Find(item);
+            }
+
         }
 
         private string ArrayToStr(int[] array, int? markIndex = null)
