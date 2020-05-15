@@ -10,13 +10,15 @@ namespace PathFinder.Api.Migrations
                 name: "PathResult",
                 columns: table => new
                 {
-                    InputArrayString = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    InputArray = table.Column<string>(nullable: true),
                     IsTraversable = table.Column<bool>(nullable: false),
-                    ResultArrayString = table.Column<string>(nullable: true)
+                    ResultArray = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PathResult", x => x.InputArrayString);
+                    table.PrimaryKey("PK_PathResult", x => x.Id);
                 });
         }
 

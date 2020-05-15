@@ -44,8 +44,8 @@ namespace PathFinder.Api.Controllers
 
             foreach (var array in arrays)
             {
-                var key = Utils.ArrayToStr(array);
-                var storedResult = _context.PathResult.FirstOrDefault(x => x.InputArrayString == key);
+                //var key = Utils.ArrayToStr(array);
+                var storedResult = _context.PathResult.FirstOrDefault(x => x.InputArray == array);
                 if (storedResult != null)
                     resultList.Add(storedResult.ToApiModel(true));
                 else

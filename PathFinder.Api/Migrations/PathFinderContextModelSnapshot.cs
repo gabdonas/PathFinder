@@ -20,16 +20,21 @@ namespace PathFinder.Api.Migrations
 
             modelBuilder.Entity("PathFinder.Api.Model.PathResult", b =>
                 {
-                    b.Property<string>("InputArrayString")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("InputArray")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsTraversable")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ResultArrayString")
+                    b.Property<string>("ResultArray")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("InputArrayString");
+                    b.HasKey("Id");
 
                     b.ToTable("PathResult");
                 });
