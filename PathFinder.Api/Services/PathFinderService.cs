@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using PathFinder.Api.Data;
 using PathFinder.Api.Model;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace PathFinder.Api.Services
     {
         Task<IEnumerable<PathFinderResultApiModel>> Process(List<int[]> arrays, CancellationToken cancellationToken);
         Task<PathFinderResultApiModel> Process(int[] array, CancellationToken cancellationToken);
+        Task<IEnumerable<PathFinderResultApiModel>> GetResults(int limit, int offset, CancellationToken cancellationToken);
+        Task<PathFinderResultApiModel> GetResultById(int id, CancellationToken cancellationToken);
     }
 
     public class PathFinderService : IPathFinderService
@@ -24,6 +27,24 @@ namespace PathFinder.Api.Services
         {
             _pathFinder = pathFinder;
             _options = options;
+        }
+
+        public async Task<PathFinderResultApiModel> GetResultById(int id, CancellationToken cancellationToken)
+        {
+            using (var context = new PathFinderContext(_options))
+            {
+                var result = await context.PathResult.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+                return result.ToApiModel(true);
+            }
+        }
+
+        public async Task<IEnumerable<PathFinderResultApiModel>> GetResults(int limit, int offset, CancellationToken cancellationToken)
+        {
+            using (var context = new PathFinderContext(_options))
+            {
+                var result = await context.PathResult.Skip(offset).Take(limit).ToListAsync(cancellationToken);
+                return result.Select(x => x.ToApiModel(true));
+            }
         }
 
         public async Task<IEnumerable<PathFinderResultApiModel>> Process(List<int[]> arrays, CancellationToken cancellationToken)

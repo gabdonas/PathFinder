@@ -2,6 +2,7 @@
 {
     public class PathFinderResultApiModel
     {
+        public int Id { get; set; }
         public int[] InputArray { get; set; }
         public bool IsTraversable { get; set; }
         public int[] ResultArray { get; set; }
@@ -15,6 +16,7 @@
         {
             return new PathFinderResultApiModel()
             {
+                Id = p.Id,
                 InputArray = p.InputArray,
                 IsTraversable = p.IsTraversable,
                 ResultArray = p.ResultArray,
