@@ -17,6 +17,7 @@ namespace PathFinder.UnitTests
         [InlineData(new[] { 1, 2, 0, 1, 0, 2, 0 }, false)]
         [InlineData(new[] { 1, 2, 0, -1, 0, 2, 0 }, false)]
         [InlineData(new[] { 1, 2, 1, -1, 0, 2, 0 }, false)]
+        [InlineData(new[] { 1, -1, 2, -1, 0, 2, 0 }, false)]
         public void FindsWhetherTraversablePathExists(int[] data, bool expected)
         {
             Assert.Equal(expected, sut.Find(data).IsTraversable);

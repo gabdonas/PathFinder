@@ -31,7 +31,7 @@ namespace PathFinder
                 if (array[currentIndex] <= 0) return new PathFinderResult { IsTraversable = false };
 
                 var maxAdvance = 0;
-                var bestStep = 0;
+                var bestStep = 1;
                 var stepTo = currentIndex + array[currentIndex];
                 if (stepTo < array.Length - 1)
                 {
