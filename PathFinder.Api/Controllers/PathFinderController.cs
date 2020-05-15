@@ -23,7 +23,7 @@ namespace PathFinder.Api.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok($"This is pathfinder. Use POST with body {{\"array\":[...]}}, or go to {HttpContext.Request.GetEncodedUrl()}/results to review ");
+            return Ok($"This is pathfinder. Use POST with body {{\"arrays\":[[...],[...]...]}}, or go to {HttpContext.Request.GetEncodedUrl()}/results to review ");
         }
 
         [HttpGet]
