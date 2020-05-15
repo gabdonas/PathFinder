@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinder", "PathFinder\Pa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinder.UnitTests", "PathFinder.UnitTests\PathFinder.UnitTests.csproj", "{330D4799-2292-423C-9E22-CD639A4983F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathFinder.Api", "PathFinder.Api\PathFinder.Api.csproj", "{627ED196-445B-463E-B697-F8BADBDC4E61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinder.Api", "PathFinder.Api\PathFinder.Api.csproj", "{627ED196-445B-463E-B697-F8BADBDC4E61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

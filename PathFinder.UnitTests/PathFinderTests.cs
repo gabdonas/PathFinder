@@ -79,12 +79,12 @@ namespace PathFinder.UnitTests
         }
 
         [Theory]
-        [InlineData(new[] { -1 }, false, new[] { 0, 1 })]
-        [InlineData(new[] { 5 }, true, new[] { 0 })]
-        [InlineData(new[] { int.MaxValue }, false, null)]
-        [InlineData(new int[] { }, false, null)]
-        [InlineData(null, false, null)]
-        public void ShouldThrowExceptionFor1ItemOrEmptyArray(int[] data, bool expectedResult, int[] expectedPath)
+        [InlineData(new[] { -1 })]
+        [InlineData(new[] { 5 })]
+        [InlineData(new[] { int.MaxValue })]
+        [InlineData(new int[] { })]
+        [InlineData(null)]
+        public void ShouldThrowExceptionFor1ItemOrEmptyArray(int[] data)
         {
             Assert.ThrowsAny<Exception>(() => sut.Find(data));
         }
