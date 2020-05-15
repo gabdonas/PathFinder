@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PathFinder.Api.Data;
 using PathFinder.Api.Model;
+using PathFinder.Api.Model.Api;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -32,17 +33,17 @@ namespace PathFinder.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] JsonElement body)
+        public ActionResult Post(PathFinderParameterModel model)
         {
             var resultList = new List<PathFinderResultApiModel>();
-            var arrays = GetArrays(body);
-            if (arrays.Any(x => x.Length < 2))
+
+            if (model.Arrays.Any(x => x.Length < 2))
             {
-                ModelState.AddModelError("", "Parameter should be a valid array of at least two integers");
+                ModelState.AddModelError("Arrays", "Should contain valid arrays of at least two integers");
                 return BadRequest(ModelState);
             }
 
-            foreach (var array in arrays)
+            foreach (var array in model.Arrays)
             {
                 //var key = Utils.ArrayToStr(array);
                 var storedResult = _context.PathResult.FirstOrDefault(x => x.InputArray == array);
@@ -66,24 +67,6 @@ namespace PathFinder.Api.Controllers
             return Ok(resultList);
         }
 
-        private static int[][] GetArrays(JsonElement body)
-        {
-            if (body.ValueKind == JsonValueKind.Array)
-            {
-                if (body.GetArrayLength() > 1)
-                {
-                    if (body[0].ValueKind == JsonValueKind.Array)
-                        return JsonSerializer.Deserialize<int[][]>(body.ToString());
-                    else
-                        return new[] { JsonSerializer.Deserialize<int[]>(body.ToString()) };
-                }
-            }
-            else
-            {
-                return GetArrays(body.EnumerateObject().First().Value);
 
-            }
-            return new int[][] { };
-        }
     }
 }
