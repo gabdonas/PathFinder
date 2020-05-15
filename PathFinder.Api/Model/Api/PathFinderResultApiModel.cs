@@ -1,4 +1,4 @@
-﻿namespace PathFinder.Api.Model
+﻿namespace PathFinder.Api.Model.Api
 {
     public class PathFinderResultApiModel
     {

@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using PathFinder.Api.Data;
-
+using PathFinder.Api.Services;
 
 
 namespace PathFinder.Api
@@ -28,12 +22,18 @@ namespace PathFinder.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var optionsBuilder = new DbContextOptionsBuilder<PathFinderContext>();
+            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("PathFinderContext"));
+            services.AddDbContext<PathFinderContext>();
 
             services.AddControllers();
             services.AddSingleton(typeof(IPathFinder), typeof(PathFinder));
-            services.AddDbContext<PathFinderContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("PathFinderContext")));
-            
+            services.AddSingleton<IPathFinderService>((sp) =>
+            {
+                using var scope = sp.CreateScope();
+                return new PathFinderService(scope.ServiceProvider.GetService<IPathFinder>(), optionsBuilder.Options);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,7 +47,7 @@ namespace PathFinder.Api
 
             app.UseRouting();
 
-           
+
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

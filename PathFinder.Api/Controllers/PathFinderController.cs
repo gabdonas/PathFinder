@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PathFinder.Api.Data;
-using PathFinder.Api.Model;
+﻿using Microsoft.AspNetCore.Mvc;
 using PathFinder.Api.Model.Api;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using PathFinder.Api.Services;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PathFinder.Api.Controllers
 {
@@ -17,13 +11,11 @@ namespace PathFinder.Api.Controllers
     [Route("PathFinder")]
     public class PathFinderController : ControllerBase
     {
-        private readonly PathFinderContext _context;
-        private readonly IPathFinder _pathFinder;
+        private readonly IPathFinderService _pathFinderService;
 
-        public PathFinderController(IPathFinder pathFinder, PathFinderContext context)
+        public PathFinderController(IPathFinderService pathFinderService)
         {
-            _pathFinder = pathFinder;
-            _context = context;
+            _pathFinderService = pathFinderService;
         }
 
         [HttpGet]
@@ -33,9 +25,8 @@ namespace PathFinder.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(PathFinderParameterModel model)
+        public async Task<ActionResult> Post(PathFinderBatchParameterModel model, CancellationToken cancellationToken)
         {
-            var resultList = new List<PathFinderResultApiModel>();
 
             if (model.Arrays.Any(x => x.Length < 2))
             {
@@ -43,28 +34,9 @@ namespace PathFinder.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            foreach (var array in model.Arrays)
-            {
-                //var key = Utils.ArrayToStr(array);
-                var storedResult = _context.PathResult.FirstOrDefault(x => x.InputArray == array);
-                if (storedResult != null)
-                    resultList.Add(storedResult.ToApiModel(true));
-                else
-                {
-                    var result = _pathFinder.Find(array);
-                    var pathResult = new PathResult()
-                    {
-                        InputArray = array,
-                        IsTraversable = result.IsTraversable,
-                        ResultArray = result.Indices
-                    };
-                    _context.PathResult.Add(pathResult);
-                    _context.SaveChanges();
-                    resultList.Add(pathResult.ToApiModel(false));
-                }
-            }
+            var result = await _pathFinderService.Process(model.Arrays, cancellationToken);
 
-            return Ok(resultList);
+            return Ok(result);
         }
 
 

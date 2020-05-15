@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PathFinder.Api.Model.Api
 {
-    public class PathFinderParameterModel
+    public class PathFinderBatchParameterModel
     {
         [Required]
         public List<int[]> Arrays { get; set; }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PathFinder
 {
     public interface IPathFinder
     {
         PathFinderResult Find(int[] array);
+        Task<PathFinderResult> FindAsync(int[] array, CancellationToken cancellationToken);
         IEnumerable<PathFinderResult> Find(int[][] array);
     }
 
@@ -20,6 +20,11 @@ namespace PathFinder
 
     public class PathFinder : IPathFinder
     {
+
+        public async Task<PathFinderResult> FindAsync(int[] array, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() => Find(array), cancellationToken);
+        }
 
         public PathFinderResult Find(int[] array)
         {
@@ -60,21 +65,14 @@ namespace PathFinder
 
         public IEnumerable<PathFinderResult> Find(int[][] array)
         {
-           foreach (var item in array)
+            foreach (var item in array)
             {
                 yield return Find(item);
             }
 
         }
 
-        private string ArrayToStr(int[] array, int? markIndex = null)
-        {
-            var sb = new StringBuilder();
-            var asd = new List<string>();
-            for (int i = 0; i < array.Length; i++)
-                asd.Add(i == markIndex ? $"*{array[i]}*" : array[i].ToString());
-            return $"[{string.Join(", ", asd)}]";
-        }
+
     }
 
 }
