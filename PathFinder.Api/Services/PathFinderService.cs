@@ -61,7 +61,7 @@ namespace PathFinder.Api.Services
                     return storedResult.ToApiModel(true);
                 else
                 {
-                    var result = _pathFinder.Find(array);
+                    var result = await _pathFinder.FindAsync(array, cancellationToken);
                     var pathResult = new PathResult()
                     {
                         InputArray = array,
