@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PathFinder.Api.Model.Api;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PathFinder.Api.Services
 {
@@ -21,30 +22,26 @@ namespace PathFinder.Api.Services
     public class PathFinderService : IPathFinderService
     {
         private readonly IPathFinder _pathFinder;
-        private DbContextOptions<PathFinderContext> _options;
+        private readonly PathFinderContext _context;
+        private readonly IServiceProvider _serviceProvider;
 
-        public PathFinderService(IPathFinder pathFinder, DbContextOptions<PathFinderContext> options)
+        public PathFinderService(IPathFinder pathFinder, PathFinderContext context, IServiceProvider serviceProvider)
         {
             _pathFinder = pathFinder;
-            _options = options;
+            _context = context;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<PathFinderResultApiModel> GetResultById(int id, CancellationToken cancellationToken)
         {
-            using (var context = new PathFinderContext(_options))
-            {
-                var result = await context.PathResult.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-                return result.ToApiModel(true);
-            }
+            var result = await _context.PathResult.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return result.ToApiModel(true);
         }
 
         public async Task<IEnumerable<PathFinderResultApiModel>> GetResults(int limit, int offset, CancellationToken cancellationToken)
         {
-            using (var context = new PathFinderContext(_options))
-            {
-                var result = await context.PathResult.Skip(offset).Take(limit).ToListAsync(cancellationToken);
-                return result.Select(x => x.ToApiModel(true));
-            }
+            var result = await _context.PathResult.Skip(offset).Take(limit).ToListAsync(cancellationToken);
+            return result.Select(x => x.ToApiModel(true));
         }
 
         public async Task<IEnumerable<PathFinderResultApiModel>> Process(List<int[]> arrays, CancellationToken cancellationToken)
@@ -55,8 +52,10 @@ namespace PathFinder.Api.Services
 
         public async Task<PathFinderResultApiModel> Process(int[] array, CancellationToken cancellationToken)
         {
-            using (var context = new PathFinderContext(_options))
+            using (var scope = _serviceProvider.CreateScope())
             {
+                var context = scope.ServiceProvider.GetService<PathFinderContext>();
+
                 var storedResult = await context.PathResult.FirstOrDefaultAsync(x => x.InputArray == array, cancellationToken);
                 if (storedResult != null)
                     return storedResult.ToApiModel(true);
